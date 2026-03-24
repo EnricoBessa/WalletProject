@@ -1,0 +1,182 @@
+:root {
+    --bg: #0f172a; /* fundo escuro (dark moderno) */
+    --card: #111827; /* cards */
+    --accent: #58bd1d; 
+    --accent-soft: #fb923c;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: #1f2937;
+    --success: #22c55e;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* LOGIN */
+
+.login-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-box {
+    background: var(--card);
+    padding: 40px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.subtitle {
+    color: var(--muted);
+    margin-bottom: 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #020617;
+    color: white;
+}
+
+button {
+    background: var(--accent);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.link-button {
+    margin-top: 16px;
+    font-size: 13px;
+    color: #9ca3af;
+    background: none;
+    border: none;
+}
+
+    .link-button:hover {
+        color: #58bd1d;
+    }
+
+/* DASHBOARD */
+
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    background: #020617;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+    .sidebar h2 {
+        color: var(--accent);
+    }
+
+    .sidebar nav span {
+        display: block;
+        margin-top: 20px;
+        color: var(--muted);
+    }
+
+    .sidebar .active {
+        color: white;
+        font-weight: bold;
+    }
+
+.content {
+    flex: 1;
+    padding: 30px;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 16px;
+}
+
+.card {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.highlight {
+    border: 1px solid var(--accent);
+}
+
+.results {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.result-card {
+    flex: 1;
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.money {
+    color: var(--success);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.money-input {
+  display: flex;
+  gap: 8px;
+}
+
+.money-input select {
+  background: var(--input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.input-wrapper input {
+  padding-left: 42px;
+  width: 100%;
+}

@@ -4,7 +4,7 @@ using JwtAuthDotNet9.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using RouteAttribute = Microsoft.AspNetCore.Components.RouteAttribute;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JwtAuthDotNet9.Controllers
 {
