@@ -1,0 +1,124 @@
+﻿/* dashboard.css */
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 350px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.btn {
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: 0.2s ease;
+}
+
+    .btn-primary:hover {
+        background: #2563eb;
+    }
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: 0.2s ease;
+}
+
+    .btn-danger:hover {
+        background: #b91c1c;
+    }
+
+.card {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 16px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    margin-top: 4px;
+}
+
+.tags-section {
+    margin-top: 20px;
+}
+
+.tag-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+/* Layout grid */
+.cards-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    margin-top: 24px;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.tag-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: #1f2937;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .tag-chip:hover {
+        background: #374151;
+    }
+
+    .tag-chip.selected {
+        background: #2563eb;
+    }
+
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: #f87171;
+    cursor: pointer;
+    font-weight: bold;
+}
