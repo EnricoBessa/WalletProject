@@ -1,0 +1,50 @@
+2. Adicionar no DbContext
+
+Registrar a entidade no contexto do banco para que o Entity Framework consiga gerenciá-la.
+
+public DbSet<Tag> Tags { get; set; }
+
+================================================================================================================================================
+================================================================================================================================================
+
+3. Criar a migration
+
+A migration é responsável por gerar a estrutura da tabela no banco.
+
+No terminal:
+
+dotnet ef migrations add NomeDaMigration
+
+Exemplo:
+
+dotnet ef migrations add CreateTagTable
+
+================================================================================================================================================
+================================================================================================================================================
+
+4. Atualizar o banco de dados
+
+Aplicar a migration para criar a tabela no banco.
+
+dotnet ef database update
+
+================================================================================================================================================
+================================================================================================================================================
+
+EXTRA
+
+dotnet tool install --global dotnet-ef
+
+dotnet ef
+
+dotnet ef migrations add CreateTagsTable
+
+dotnet ef database update
+
+
+
+dotnet tool install --global dotnet-ef
+dotnet add package Microsoft.EntityFrameworkCore.Design
+cd SUA_PASTA_DO_BACKEND
+dotnet ef migrations add CreateTagTable
+dotnet ef database update

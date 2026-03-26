@@ -107,7 +107,7 @@ namespace JwtAuthDotNet9.Services
 
             user.RefreshToken = refreshToken;
 
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(12);
 
             await context.SaveChangesAsync();
 

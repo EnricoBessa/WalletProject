@@ -29,7 +29,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+//SERVICES
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
+builder.Services.AddScoped<ITagService, TagService>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -37,20 +40,19 @@ builder.Services.AddOpenApi();
 // 👇 CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
+    options.AddPolicy("AllowAll",
         policy =>
         {
             policy
-                .WithOrigins(
-                    "http://localhost:5173",
-                    "http://localhost:5174"
-                )
+                .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
 });
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {
@@ -61,7 +63,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // 👇 MUITO IMPORTANTE
-app.UseCors("AllowFrontend");
+//app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

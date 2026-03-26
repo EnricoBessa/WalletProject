@@ -12,7 +12,7 @@ export default function Login({ onLogin, onGoToRegister }) {
         setError(null)
 
         if (!username || !password) {
-            setError('Please fill in username and password')
+            setError('⚠️ Please fill in all fields to continue')
             return
         }
 
@@ -28,39 +28,41 @@ export default function Login({ onLogin, onGoToRegister }) {
             })
 
         } catch (err) {
-            setError('Invalid username or password')
+            setError('❌ Invalid email or password. Please try again.')
         }
     }
 
     return (
         <div className="login-container">
             <div className="login-box">
-                <h1>💰 Wallet</h1>
+                <h1>💰 Your Wallet</h1>
 
                 <form onSubmit={handleSubmit} className="form">
                     <input
-                        placeholder="Email"
+                        placeholder="Enter your email"
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                     />
 
                     <input
                         type="password"
-                        placeholder="Password"
+                        placeholder="Enter your password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />
 
                     {error && <div className="error">{error}</div>}
 
-                    <button type="submit">Login</button>
+                    <button type="submit">
+                        Sign in
+                    </button>
 
                     <button
                         type="button"
                         className="link-button"
                         onClick={onGoToRegister}
                     >
-                        Create account
+                        Create a new account
                     </button>
                 </form>
             </div>

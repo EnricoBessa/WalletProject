@@ -48,6 +48,24 @@ export default function Dashboard({ user, onLogout }) {
         loadData()
     }, [])
 
+    useEffect(() => {
+        async function loadTags() {
+            try {
+                const response = await axios.get(`${API_URL}/api/tag`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                })
+
+                setTags(response.data)
+            } catch {
+                console.error('Error loading tags')
+            }
+        }
+
+        loadTags()
+    }, [])
+
     async function handleSave() {
         try {
             await axios.post(`${API_URL}/api/finance`, {
@@ -63,17 +81,27 @@ export default function Dashboard({ user, onLogout }) {
     }
 
     async function handleAddTag() {
-        const name = prompt('Tag name');
-        const value = prompt('Value');
+        const name = prompt('Tag name')
+        const value = prompt('Value')
 
-        if (!name || !value) return;
+        if (!name || !value) return
 
         try {
-            const response = await axios.post(`${API_URL}/api/tags`, { name, value });
-            // Adiciona tag retornada pelo backend
-            setTags([...tags, response.data]);
-        } catch {
-            alert('Error saving tag');
+            const response = await axios.post(
+                `${API_URL}/api/tag`,
+                { name, value: Number(value) },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                }
+            )
+
+            setTags([...tags, response.data])
+        } catch (err) {
+            //alert('Error saving tag'
+            alert(err.response?.data || err.message)
+
         }
     }
 
@@ -125,31 +153,23 @@ export default function Dashboard({ user, onLogout }) {
                 <div className="content">
                     <h1>Manage Tags</h1>
 
-                    <button
-                        onClick={() => {
-                            const name = prompt('Tag name')
-                            const value = prompt('Value')
-
-                            if (name && value) {
-                                setTags([...tags, { name, value }])
-                            }
-                        }}
-                    >
+                    {/* ✅ AGORA USA BACKEND */}
+                    <button onClick={handleAddTag}>
                         + Add Tag
                     </button>
 
                     <div style={{ marginTop: 20 }}>
                         <div className="tags-container">
-                            {tags.map((tag, index) => {
+                            {tags.map((tag) => {
                                 const selected = selectedTags.includes(tag)
 
                                 return (
                                     <div
-                                        key={index}
+                                        key={tag.id}
                                         className={`tag-chip ${selected ? 'selected' : ''}`}
                                         onClick={() => {
                                             if (selected) {
-                                                setSelectedTags(selectedTags.filter(t => t !== tag))
+                                                setSelectedTags(selectedTags.filter(t => t.id !== tag.id))
                                             } else {
                                                 setSelectedTags([...selectedTags, tag])
                                             }
@@ -157,13 +177,28 @@ export default function Dashboard({ user, onLogout }) {
                                     >
                                         <span>{tag.name} - $ {tag.value}</span>
 
-                                        {/* BOTÃO DE APAGAR */}
+                                        {/* ✅ DELETE CORRIGIDO */}
                                         <button
                                             className="delete-btn"
-                                            onClick={(e) => {
+                                            onClick={async (e) => {
                                                 e.stopPropagation()
-                                                setTags(tags.filter(t => t !== tag))
-                                                setSelectedTags(selectedTags.filter(t => t !== tag))
+
+                                                try {
+                                                    await axios.delete(
+                                                        `${API_URL}/api/tag/${tag.id}`,
+                                                        {
+                                                            headers: {
+                                                                Authorization: `Bearer ${localStorage.getItem("token")}`
+                                                            }
+                                                        }
+                                                    )
+
+                                                    setTags(prev => prev.filter(t => t.id !== tag.id))
+                                                    setSelectedTags(prev => prev.filter(t => t.id !== tag.id))
+                                                } catch (err) {
+                                                    console.error(err)
+                                                    alert('Error deleting tag')
+                                                }
                                             }}
                                         >
                                             ✕
@@ -257,7 +292,7 @@ export default function Dashboard({ user, onLogout }) {
                                         const selected = selectedTags.includes(tag)
 
                                         return (
-                                            <tr key={index} className={selected ? 'selected-row' : ''}>
+                                            <tr key={tag.id} className={selected ? 'selected-row' : ''}>
                                                 <td>{tag.name}</td>
                                                 <td>$ {tag.value}</td>
 

@@ -12,8 +12,6 @@ namespace JwtAuthDotNet9.Controllers
     [ApiController]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        public static IdentityUser user = new IdentityUser();
-
         [HttpPost("register")]
         public async Task<ActionResult<ActionResult<User>>> RegisterAsync(UserDTO request)
         {
