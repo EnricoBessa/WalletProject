@@ -28,7 +28,7 @@ export default function Login({ onLogin, onGoToRegister }) {
             })
 
         } catch (err) {
-            setError('❌ Invalid email or password. Please try again.')
+            setError('❌ Invalid email or password. Please try again.' + err)
         }
     }
 

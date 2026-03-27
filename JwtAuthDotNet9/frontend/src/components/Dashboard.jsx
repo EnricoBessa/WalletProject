@@ -41,7 +41,7 @@ export default function Dashboard({ user, onLogout }) {
 
                 setHistory(historyData.data || [])
             } catch {
-                console.error('Error loading data')
+                alert('Error loading data')
             }
         }
 
@@ -59,37 +59,63 @@ export default function Dashboard({ user, onLogout }) {
 
                 setTags(response.data)
             } catch {
-                console.error('Error loading tags')
+                alert('Error loading tags')
             }
         }
 
         loadTags()
     }, [])
 
+    const [wallet, setWallet] = useState(null)
+
+    useEffect(() => {
+        async function loadWallet() {
+            const response = await axios.get(`${API_URL}/api/wallet`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
+
+            setWallet(response.data[0])
+        }
+
+        loadWallet()
+    }, [])
+
     async function handleSave() {
         try {
-            await axios.post(`${API_URL}/api/finance`, {
+            await axios.post(`${API_URL}/api/wallet`, {
                 income,
-                expenses,
-                balance,
-                goal
+                goal,
+                transactions: selectedTags.map(tag => ({
+                    tagId: tag.id,
+                    amount: tag.value,
+                    description: tag.name
+                }))
             })
             alert('Saved successfully!')
-        } catch {
-            alert('Error saving data')
+        } catch(ex) {
+            alert('Error saving data' + ex)
         }
     }
 
-    async function handleAddTag() {
-        const name = prompt('Tag name')
-        const value = prompt('Value')
+    async function handleAddTransaction() {
+        const tagName = prompt('Category (ex: Food)')
+        const amount = prompt('Value')
+        const description = prompt('Description (optional)')
 
-        if (!name || !value) return
+        if (!tagName || !amount) return
 
         try {
             const response = await axios.post(
-                `${API_URL}/api/tag`,
-                { name, value: Number(value) },
+                `${API_URL}/api/transaction`,
+                {
+                    tagName: tagName,
+                    amount: Number(amount),
+                    description: description,
+                    date: new Date(),
+                    walletInformationId: wallet.id
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -97,11 +123,10 @@ export default function Dashboard({ user, onLogout }) {
                 }
             )
 
-            setTags([...tags, response.data])
-        } catch (err) {
-            //alert('Error saving tag'
-            alert(err.response?.data || err.message)
+            console.log(response.data)
 
+        } catch (ex) {
+            alert('Error saving transaction: ' + ex)
         }
     }
 
@@ -154,7 +179,7 @@ export default function Dashboard({ user, onLogout }) {
                     <h1>Manage Tags</h1>
 
                     {/* ✅ AGORA USA BACKEND */}
-                    <button onClick={handleAddTag}>
+                    <button onClick={handleAddTransaction}>
                         + Add Tag
                     </button>
 
@@ -275,7 +300,7 @@ export default function Dashboard({ user, onLogout }) {
                         <div className="card">
                             <h3>Monthly Tags</h3>
 
-                            <button onClick={handleAddTag}>+ Add Tag</button>
+                            <button onClick={handleAddTransaction}>+ Add Tag</button>
 
                             <table className="tags-table">
                                 <thead>

@@ -35,12 +35,23 @@ namespace JwtAuthDotNet9.Services
             if(await context.Users.AnyAsync(u => u.Username == request.Username))
                 return null;
 
-            User user = new User();
+            User user = new User
+            {
+                Username = request.Username
+            };
 
             string hashedPassword = new PasswordHasher<User>().HashPassword(user, request.Password);
-
-            user.Username = request.Username;
             user.Password = hashedPassword;
+
+            WalletInformation wallet = new WalletInformation
+            {
+                User = user,
+                Income = 0,
+                Goal = 0,
+                DateCreation = DateTime.UtcNow
+            };
+
+            user.WalletInformations.Add(wallet);
 
             context.Users.Add(user);
             await context.SaveChangesAsync();

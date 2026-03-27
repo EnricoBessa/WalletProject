@@ -1,14 +1,17 @@
 ﻿namespace JwtAuthDotNet9.Entities
 {
-    public class Tag
+    public class WalletInformation
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public string Name { get; set; }
+        public decimal Income { get; set; }
+        public decimal Goal { get; set; }
 
-        // FK dono da tag
+        public DateTime DateCreation { get; set; }
+
+        // FK
         public Guid UserId { get; set; }
-        public User User { get; set; }
+        public User User { get; set; } = null!;
 
         // Relacionamento
         public List<Transaction> Transactions { get; set; } = new();

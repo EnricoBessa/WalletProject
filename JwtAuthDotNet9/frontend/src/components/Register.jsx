@@ -26,7 +26,7 @@ export default function Register({ onBack }) {
 
         try {
             const response = await axios.post(`${API_URL}/api/auth/register`, {
-                email: username,
+                username: username,
                 password: password
             })
 
@@ -36,7 +36,7 @@ export default function Register({ onBack }) {
             setConfirmPassword('')
 
         } catch (err) {
-            setError('Error creating user')
+            setError('Error creating user' + err)
         }
     }
 
