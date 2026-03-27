@@ -1,4 +1,4 @@
-﻿using JwtAuthDotNet9.Services;
+﻿using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -48,6 +48,7 @@ namespace JwtAuthDotNet9.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("ERRO" + ex.Message);
                 return BadRequest(ex.Message);
             }
         }

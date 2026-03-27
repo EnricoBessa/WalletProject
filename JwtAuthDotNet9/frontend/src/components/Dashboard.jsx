@@ -18,10 +18,10 @@ export default function Dashboard({ user, onLogout }) {
     const [history, setHistory] = useState([])
     const [selectedMonth, setSelectedMonth] = useState('all')
     const [page, setPage] = useState('dashboard')
-    const [tags, setTags] = useState([])
+    const [wallet, setWallet] = useState(null);
+    const [tags, setTags] = useState([]);
     const [selectedTags, setSelectedTags] = useState([])
     const API_URL = import.meta.env.VITE_API_URL
-
     function onlyNumbers(value) {
         return value.replace(/\D/g, '')
     }
@@ -49,34 +49,46 @@ export default function Dashboard({ user, onLogout }) {
     }, [])
 
     useEffect(() => {
+        if (!wallet) return;
+
         async function loadTags() {
             try {
-                const response = await axios.get(`${API_URL}/api/tag`, {
+                const response = await axios.post(
+                    `${API_URL}/api/transaction/listalltag`,
+                    { WalletInformationId: wallet.id },
+                    { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+                );
+
+                // map para o formato esperado pelo frontend
+                const formattedTags = response.data.map(tx => ({
+                    id: tx.id,
+                    name: tx.tagName,
+                    value: tx.amount
+                }));
+
+                setTags(formattedTags);
+            } catch (err) {
+                alert('Error loading tags' + err);
+            }
+        }
+
+        loadTags();
+    }, [wallet]);
+
+    useEffect(() => {
+        async function loadWallet() {
+            try {
+                const response = await axios.get(`${API_URL}/api/wallet/current`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 })
 
-                setTags(response.data)
-            } catch {
-                alert('Error loading tags')
+                setWallet({ id: response.data })
             }
-        }
-
-        loadTags()
-    }, [])
-
-    const [wallet, setWallet] = useState(null)
-
-    useEffect(() => {
-        async function loadWallet() {
-            const response = await axios.get(`${API_URL}/api/wallet`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            })
-
-            setWallet(response.data[0])
+            catch (ex) {
+                alert('Error loading wallet: ' + ex)
+            }
         }
 
         loadWallet()
@@ -107,14 +119,24 @@ export default function Dashboard({ user, onLogout }) {
         if (!tagName || !amount) return
 
         try {
+            if (!wallet) {
+                alert("Error: wallet not found for this user.");
+                return;
+            }
+
+            if (!tagName) {
+                alert("Error: tag name can't be empty.");
+                return;
+            }
+
             const response = await axios.post(
-                `${API_URL}/api/transaction`,
-                {
-                    tagName: tagName,
-                    amount: Number(amount),
-                    description: description,
-                    date: new Date(),
-                    walletInformationId: wallet.id
+                `${API_URL}/api/transaction/create`,
+                {                    
+                    Amount: Number(amount),                  
+                    Description: description,
+                    Date: new Date(),
+                    TagName: tagName,
+                    WalletInformationId: wallet.id,    
                 },
                 {
                     headers: {
@@ -123,7 +145,7 @@ export default function Dashboard({ user, onLogout }) {
                 }
             )
 
-            console.log(response.data)
+            alert("response.data: " + response.data)
 
         } catch (ex) {
             alert('Error saving transaction: ' + ex)

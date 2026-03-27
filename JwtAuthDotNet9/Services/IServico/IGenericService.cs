@@ -1,4 +1,4 @@
-﻿namespace JwtAuthDotNet9.Services
+﻿namespace JwtAuthDotNet9.Services.IServico
 {
     public interface IGenericService<T> where T : class
     {

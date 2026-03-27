@@ -3,7 +3,7 @@ using JwtAuthDotNet9.Models;
 using Microsoft.AspNetCore.Identity;
 using JwtAuthDotNet9.Entities;
 
-namespace JwtAuthDotNet9.Services
+namespace JwtAuthDotNet9.Services.IServico
 {
     public interface IAuthService
     {

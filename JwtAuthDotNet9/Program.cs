@@ -1,5 +1,6 @@
 using JwtAuthDotNet9.Data;
 using JwtAuthDotNet9.Services;
+using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -33,6 +34,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<IWalletInformationtService, WalletInformationtService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

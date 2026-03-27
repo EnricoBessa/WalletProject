@@ -1,6 +1,7 @@
 ﻿using JwtAuthDotNet9.Data;
 using JwtAuthDotNet9.Entities;
 using JwtAuthDotNet9.Models;
+using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Documents;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ namespace JwtAuthDotNet9.Services
 
         public async Task<User?> RegisterAsync(UserDTO request)
         {
-            if(await context.Users.AnyAsync(u => u.Username == request.Username))
+            if (await context.Users.AnyAsync(u => u.Username == request.Username))
                 return null;
 
             User user = new User

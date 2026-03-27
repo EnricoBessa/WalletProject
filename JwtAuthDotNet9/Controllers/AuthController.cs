@@ -1,6 +1,6 @@
 ﻿using JwtAuthDotNet9.Entities;
 using JwtAuthDotNet9.Models;
-using JwtAuthDotNet9.Services;
+using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +15,24 @@ namespace JwtAuthDotNet9.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<ActionResult<User>>> RegisterAsync(UserDTO request)
         {
-            var user = await authService.RegisterAsync(request);
+            try
+            {
+                var user = await authService.RegisterAsync(request);
 
-            if(user is null)
-                return BadRequest("User already exists.");
+                if (user is null)
+                    return BadRequest("User already exists.");
 
-            return Ok(user);
+                var response = new UserResponseDTO
+                {
+                    Username = user.Username
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("login")]

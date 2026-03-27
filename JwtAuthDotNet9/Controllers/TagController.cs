@@ -1,6 +1,6 @@
 using JwtAuthDotNet9.Entities;
 using JwtAuthDotNet9.Models;
-using JwtAuthDotNet9.Services;
+using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
