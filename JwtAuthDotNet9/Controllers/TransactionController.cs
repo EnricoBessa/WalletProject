@@ -1,5 +1,6 @@
 using JwtAuthDotNet9.Entities;
-using JwtAuthDotNet9.Models;
+using JwtAuthDotNet9.Models.Transaction;
+using JwtAuthDotNet9.Models.Wallet;
 using JwtAuthDotNet9.Services;
 using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Authorization;
@@ -62,8 +63,6 @@ namespace JwtAuthDotNet9.Controllers
         {
             try
             {
-                Console.WriteLine("test 1");
-
                 List<Transaction> transactions = await serviceTransaction.ListAllTagTransaction(dto.WalletInformationId);
 
                 return Ok(transactions);

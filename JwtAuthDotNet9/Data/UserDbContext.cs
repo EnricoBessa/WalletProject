@@ -22,7 +22,8 @@ namespace JwtAuthDotNet9.Data
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.WalletInformation)
                 .WithMany(w => w.Transactions)
-                .HasForeignKey(t => t.WalletInformationId);
+                .HasForeignKey(t => t.WalletInformationId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Transaction>()
                 .Property(t => t.Amount)

@@ -15,12 +15,21 @@ namespace JwtAuthDotNet9.Services
             this.context = context;
         }
 
+        public async Task<WalletInformation> CreateWalletAsync(WalletInformation wallet)
+        {
+            context.WalletInformation.Add(wallet);
+            await context.SaveChangesAsync();
+            return wallet;
+        }
+
+        public async Task<WalletInformation?> GetByIdAsync(Guid id)
+        {
+            return await context.WalletInformation.Where(w => w.Id == id).FirstOrDefaultAsync();
+        }
+
         public async Task<WalletInformation?> GetWalletByUserIdAsync(Guid userId)
         {
-            return await context.WalletInformation
-                .Where(w => w.UserId == userId)
-                .OrderByDescending(w => w.DateCreation)
-                .FirstOrDefaultAsync();
+            return await context.WalletInformation.Where(w => w.UserId == userId).OrderByDescending(w => w.DateCreation).FirstOrDefaultAsync();
         }
     }
 }

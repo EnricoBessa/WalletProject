@@ -87,6 +87,9 @@ namespace JwtAuthDotNet9.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("Current")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 

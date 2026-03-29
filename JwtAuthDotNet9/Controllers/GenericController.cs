@@ -26,9 +26,16 @@ namespace JwtAuthDotNet9.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var userId = GetUserId();
-            var data = await _service.GetAllAsync(userId);
-            return Ok(data);
+            try
+            {
+                var userId = GetUserId();
+                var data = await _service.GetAllAsync(userId);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error to get all");
+            }
         }
 
         [HttpPost]
@@ -49,21 +56,29 @@ namespace JwtAuthDotNet9.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("ERRO" + ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest("Error to create");
             }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var userId = GetUserId();
+            try
+            {
+                var userId = GetUserId();
 
-            var success = await _service.DeleteAsync(id, userId);
+                var success = await _service.DeleteAsync(id, userId);
 
-            if (!success)
-                return NotFound();
+                if (!success)
+                    return NotFound();
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERRO" + ex.Message);
+                return BadRequest("Error to delete");
+            }
         }
     }
 }

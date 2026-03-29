@@ -1,6 +1,7 @@
 ﻿using JwtAuthDotNet9.Data;
 using JwtAuthDotNet9.Entities;
 using JwtAuthDotNet9.Models;
+using JwtAuthDotNet9.Models.User;
 using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Documents;
