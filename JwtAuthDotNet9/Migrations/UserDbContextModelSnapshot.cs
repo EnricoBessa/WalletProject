@@ -22,6 +22,26 @@ namespace JwtAuthDotNet9.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("JwtAuthDotNet9.Entities.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("JwtAuthDotNet9.Entities.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -38,6 +58,9 @@ namespace JwtAuthDotNet9.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("TagName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -46,6 +69,8 @@ namespace JwtAuthDotNet9.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TagId");
 
                     b.HasIndex("WalletInformationId");
 
@@ -57,6 +82,10 @@ namespace JwtAuthDotNet9.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -111,8 +140,23 @@ namespace JwtAuthDotNet9.Migrations
                     b.ToTable("WalletInformation");
                 });
 
+            modelBuilder.Entity("JwtAuthDotNet9.Entities.Tag", b =>
+                {
+                    b.HasOne("JwtAuthDotNet9.Entities.User", "User")
+                        .WithMany("Tags")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JwtAuthDotNet9.Entities.Transaction", b =>
                 {
+                    b.HasOne("JwtAuthDotNet9.Entities.Tag", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("TagId");
+
                     b.HasOne("JwtAuthDotNet9.Entities.WalletInformation", "WalletInformation")
                         .WithMany("Transactions")
                         .HasForeignKey("WalletInformationId")
@@ -133,8 +177,15 @@ namespace JwtAuthDotNet9.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JwtAuthDotNet9.Entities.Tag", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
             modelBuilder.Entity("JwtAuthDotNet9.Entities.User", b =>
                 {
+                    b.Navigation("Tags");
+
                     b.Navigation("WalletInformations");
                 });
 

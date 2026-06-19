@@ -14,7 +14,7 @@ namespace JwtAuthDotNet9.Controllers
         {
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateTag([FromBody] CreateTagDTO dto)
         {
             try

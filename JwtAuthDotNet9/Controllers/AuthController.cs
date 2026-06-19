@@ -25,7 +25,8 @@ namespace JwtAuthDotNet9.Controllers
 
                 var response = new UserResponseDTO
                 {
-                    Username = user.Username
+                    Username = user.Username,
+                    Email = user.Email
                 };
 
                 return Ok(response);
@@ -48,7 +49,7 @@ namespace JwtAuthDotNet9.Controllers
 
                 return Ok(response);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest("Error to login");
             }
@@ -66,7 +67,7 @@ namespace JwtAuthDotNet9.Controllers
 
                 return Ok(response);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest("Error to refresh token");
             }

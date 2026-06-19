@@ -19,7 +19,7 @@ namespace JwtAuthDotNet9.Services
     {
         public async Task<TokenResponseDTO?> LoginAsync(UserDTO request)
         {
-            User? user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            User? user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username || u.Email == request.Username);
 
             if (user is null)
                 return null;
@@ -34,12 +34,14 @@ namespace JwtAuthDotNet9.Services
 
         public async Task<User?> RegisterAsync(UserDTO request)
         {
-            if (await context.Users.AnyAsync(u => u.Username == request.Username))
+            if (await context.Users.AnyAsync(u => u.Username == request.Username || u.Email == request.Email))
                 return null;
 
             User user = new User
             {
-                Username = request.Username
+                Username = request.Username,
+                Email = string.IsNullOrWhiteSpace(request.Email) ? request.Username : request.Email.Trim().ToLowerInvariant(),
+                Role = "User"
             };
 
             string hashedPassword = new PasswordHasher<User>().HashPassword(user, request.Password);
@@ -86,8 +88,8 @@ namespace JwtAuthDotNet9.Services
         public async Task<TokenResponseDTO?> RefreshTokenAsync(RefreshTokenRequestDTO request)
         {
             User? user = await ValidateRefreshTokenAsync(request.UserId, request.RefreshToken);
-            
-            if(user is null)
+
+            if (user is null)
                 return null;
 
             return await CreateTokenResponse(user);
@@ -130,8 +132,8 @@ namespace JwtAuthDotNet9.Services
         private async Task<User?> ValidateRefreshTokenAsync(Guid userId, string refreshToken)
         {
             User? user = await context.Users.FindAsync(userId);
-            
-            if(user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
                 return null;
 
             return user;

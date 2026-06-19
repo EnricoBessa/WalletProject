@@ -6,9 +6,10 @@ namespace JwtAuthDotNet9.Data
 {
     public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options)
     {
-        public DbSet<User> Users{ get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<WalletInformation> WalletInformation { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +19,12 @@ namespace JwtAuthDotNet9.Data
                 .HasOne(w => w.User)
                 .WithMany(u => u.WalletInformations)
                 .HasForeignKey(w => w.UserId);
+
+            modelBuilder.Entity<Tag>()
+                .HasOne(t => t.User)
+                .WithMany(u => u.Tags)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.WalletInformation)

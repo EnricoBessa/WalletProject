@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 
 export default function Login({ onLogin, onGoToRegister }) {
-    const [username, setUsername] = useState('')
+    const [emailOrUsername, setEmailOrUsername] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState(null)
     const API_URL = import.meta.env.VITE_API_URL
@@ -11,60 +11,81 @@ export default function Login({ onLogin, onGoToRegister }) {
         e.preventDefault()
         setError(null)
 
-        if (!username || !password) {
+        if (!emailOrUsername || !password) {
             setError('⚠️ Please fill in all fields to continue')
             return
         }
 
         try {
             const response = await axios.post(`${API_URL}/api/auth/login`, {
-                username: username,
+                username: emailOrUsername,
                 password: password
             })
 
-            onLogin({
-                username: username,
-                token: response.data.accessToken
+            if (!response.data || !response.data.accessToken) {
+                setError('❌ Invalid username or password. Try again.')
+                return
+            }
+
+            const token = response.data.accessToken
+            const profileResponse = await axios.get(`${API_URL}/api/user/profile`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             })
 
+            onLogin({
+                username: profileResponse.data.username || emailOrUsername,
+                email: profileResponse.data.email || '',
+                token: token
+            })
         } catch (err) {
-            setError('❌ Invalid email or password. Please try again.' + err)
+            setError('❌ Invalid username or password. Try again.')
         }
     }
 
     return (
-        <div className="login-container">
-            <div className="login-box">
-                <h1>💰 Your Wallet</h1>
+        <div className="auth-page">
+            <div className="auth-card">
+                <div className="auth-header">
+                    <div className="logo-badge">YW</div>
+                    <div>
+                        <p className="brand-label">Your Wallet</p>
+                        <strong>Welcome back</strong>
+                    </div>
+                </div>
 
-                <form onSubmit={handleSubmit} className="form">
+                <p className="auth-subtitle">Access your wallet and continue tracking your finances securely.</p>
+
+                <form onSubmit={handleSubmit} className="auth-form">
                     <input
-                        placeholder="Enter your email"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
+                        className="form-input"
+                        placeholder="Email or username"
+                        value={emailOrUsername}
+                        onChange={e => setEmailOrUsername(e.target.value)}
                     />
 
                     <input
+                        className="form-input"
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder="Password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />
 
-                    {error && <div className="error">{error}</div>}
+                    {error && <div className="form-message error">{error}</div>}
 
-                    <button type="submit">
+                    <button className="primary-btn" type="submit">
                         Sign in
                     </button>
-
-                    <button
-                        type="button"
-                        className="link-button"
-                        onClick={onGoToRegister}
-                    >
-                        Create a new account
-                    </button>
                 </form>
+
+                <div className="form-footer">
+                    <span>Don't have an account?</span>
+                    <button type="button" className="link-button" onClick={onGoToRegister}>
+                        Create an account
+                    </button>
+                </div>
             </div>
         </div>
     )

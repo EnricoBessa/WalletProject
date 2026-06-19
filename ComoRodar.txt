@@ -1,0 +1,7 @@
+cd c:\Projetos\walltet\JwtAuthDotNet9
+dotnet run
+
+cd c:\Projetos\walltet\JwtAuthDotNet9\frontend
+npm install
+npm run dev
+

@@ -46,7 +46,12 @@ namespace JwtAuthDotNet9.Services
 
         public async Task<List<T>> GetAllAsync(Guid userId)
         {
-            // 🔥 filtrar por UserId dinamicamente
+            var userIdProperty = typeof(T).GetProperty("UserId");
+            if (userIdProperty is null)
+            {
+                return await _dbSet.ToListAsync();
+            }
+
             return await _dbSet
                 .Where(e => EF.Property<Guid>(e, "UserId") == userId)
                 .ToListAsync();

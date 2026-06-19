@@ -6,7 +6,7 @@ import Dashboard from './components/Dashboard'
 export default function App() {
     const [token, setToken] = useState(() => localStorage.getItem('token'))
     const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || 'null'))
-    const [screen, setScreen] = useState('login') 
+    const [screen, setScreen] = useState('login')
 
     useEffect(() => {
         if (token) {
@@ -22,8 +22,8 @@ export default function App() {
         }
     }, [token, user])
 
-    function handleLogin({ username, token }) {
-        setUser({ username })
+    function handleLogin({ username, email, token }) {
+        setUser({ username, email })
         setToken(token)
     }
 

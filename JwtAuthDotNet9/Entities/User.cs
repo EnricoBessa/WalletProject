@@ -5,6 +5,7 @@
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
 
@@ -13,5 +14,6 @@
 
         // Relacionamento
         public List<WalletInformation> WalletInformations { get; set; } = new();
+        public List<Tag> Tags { get; set; } = new();
     }
 }

@@ -36,15 +36,8 @@ namespace JwtAuthDotNet9.Controllers
                 decimal previousCurrent = lastWallet?.Current ?? 0;
 
                 decimal totalTransactions = dto.Transactions.Sum(t => t.Amount);
-
-                decimal monthResult = dto.Income + totalTransactions;
-
-                decimal newCurrent;
-
-                if (monthResult >= 0)
-                    newCurrent = previousCurrent + monthResult;
-                else
-                    newCurrent = previousCurrent + monthResult;
+                decimal monthResult = dto.Income - totalTransactions;
+                decimal newCurrent = previousCurrent + monthResult;
 
                 WalletInformation wallet = new WalletInformation
                 {
