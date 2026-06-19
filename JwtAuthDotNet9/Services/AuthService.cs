@@ -1,6 +1,8 @@
 ﻿using JwtAuthDotNet9.Data;
 using JwtAuthDotNet9.Entities;
 using JwtAuthDotNet9.Models;
+using JwtAuthDotNet9.Models.User;
+using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Documents;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +19,7 @@ namespace JwtAuthDotNet9.Services
     {
         public async Task<TokenResponseDTO?> LoginAsync(UserDTO request)
         {
-            User? user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            User? user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username || u.Email == request.Username);
 
             if (user is null)
                 return null;
@@ -32,15 +34,28 @@ namespace JwtAuthDotNet9.Services
 
         public async Task<User?> RegisterAsync(UserDTO request)
         {
-            if(await context.Users.AnyAsync(u => u.Username == request.Username))
+            if (await context.Users.AnyAsync(u => u.Username == request.Username || u.Email == request.Email))
                 return null;
 
-            User user = new User();
+            User user = new User
+            {
+                Username = request.Username,
+                Email = string.IsNullOrWhiteSpace(request.Email) ? request.Username : request.Email.Trim().ToLowerInvariant(),
+                Role = "User"
+            };
 
             string hashedPassword = new PasswordHasher<User>().HashPassword(user, request.Password);
-
-            user.Username = request.Username;
             user.Password = hashedPassword;
+
+            WalletInformation wallet = new WalletInformation
+            {
+                User = user,
+                Income = 0,
+                Goal = 0,
+                DateCreation = DateTime.UtcNow
+            };
+
+            user.WalletInformations.Add(wallet);
 
             context.Users.Add(user);
             await context.SaveChangesAsync();
@@ -73,8 +88,8 @@ namespace JwtAuthDotNet9.Services
         public async Task<TokenResponseDTO?> RefreshTokenAsync(RefreshTokenRequestDTO request)
         {
             User? user = await ValidateRefreshTokenAsync(request.UserId, request.RefreshToken);
-            
-            if(user is null)
+
+            if (user is null)
                 return null;
 
             return await CreateTokenResponse(user);
@@ -107,7 +122,7 @@ namespace JwtAuthDotNet9.Services
 
             user.RefreshToken = refreshToken;
 
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(12);
 
             await context.SaveChangesAsync();
 
@@ -117,8 +132,8 @@ namespace JwtAuthDotNet9.Services
         private async Task<User?> ValidateRefreshTokenAsync(Guid userId, string refreshToken)
         {
             User? user = await context.Users.FindAsync(userId);
-            
-            if(user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
                 return null;
 
             return user;

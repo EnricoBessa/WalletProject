@@ -1,6 +1,7 @@
 ﻿using JwtAuthDotNet9.Entities;
 using JwtAuthDotNet9.Models;
-using JwtAuthDotNet9.Services;
+using JwtAuthDotNet9.Models.User;
+using JwtAuthDotNet9.Services.IServico;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,39 +13,64 @@ namespace JwtAuthDotNet9.Controllers
     [ApiController]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        public static IdentityUser user = new IdentityUser();
-
         [HttpPost("register")]
         public async Task<ActionResult<ActionResult<User>>> RegisterAsync(UserDTO request)
         {
-            var user = await authService.RegisterAsync(request);
+            try
+            {
+                var user = await authService.RegisterAsync(request);
 
-            if(user is null)
-                return BadRequest("User already exists.");
+                if (user is null)
+                    return BadRequest("User already exists.");
 
-            return Ok(user);
+                var response = new UserResponseDTO
+                {
+                    Username = user.Username,
+                    Email = user.Email
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<TokenResponseDTO>> Login(UserDTO request)
         {
-            TokenResponseDTO? response = await authService.LoginAsync(request);
+            try
+            {
+                TokenResponseDTO? response = await authService.LoginAsync(request);
 
-            if(response is null || response.AccessToken is null || response.RefreshToken is null)
-                return BadRequest("Username or password is incorrect.");
+                if (response is null || response.AccessToken is null || response.RefreshToken is null)
+                    return BadRequest("Username or password is incorrect.");
 
-            return Ok(response);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error to login");
+            }
         }
 
         [HttpPost("refresh-token")]
         public async Task<ActionResult<TokenResponseDTO>> RefreshToken(RefreshTokenRequestDTO request)
         {
-            TokenResponseDTO? response = await authService.RefreshTokenAsync(request);
+            try
+            {
+                TokenResponseDTO? response = await authService.RefreshTokenAsync(request);
 
-            if (response is null)
-                return Unauthorized("Invald refresh token");
+                if (response is null)
+                    return Unauthorized("Invald refresh token");
 
-            return Ok(response);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error to refresh token");
+            }
         }
 
         [Authorize]
